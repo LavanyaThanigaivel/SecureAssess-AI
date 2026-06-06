@@ -11,15 +11,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.aiexam.backend.dto.LoginResponse;
 import com.aiexam.backend.entity.User;
+import com.aiexam.backend.security.JwtUtil;
 import com.aiexam.backend.service.UserService;
-
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @GetMapping
     public List<User> getAllUsers() {
@@ -32,10 +36,24 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public User loginUser(@RequestBody User user) {
+    public LoginResponse loginUser(
+        @RequestBody User user) {
 
-    return userService.loginUser(user.getEmail(), user.getPassword());
-    
+    User loggedInUser =
+            userService.loginUser(
+                    user.getEmail(),
+                    user.getPassword());
+
+    if (loggedInUser != null) {
+
+        String token =
+                jwtUtil.generateToken(
+                        loggedInUser.getEmail());
+
+        return new LoginResponse(token);
+    }
+
+    return null;
     }
 
     @PutMapping("/{id}")

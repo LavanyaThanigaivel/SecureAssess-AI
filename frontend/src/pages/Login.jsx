@@ -1,6 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import API from "../services/api";
 
 function Login() {
+
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -19,28 +23,27 @@ function Login() {
 
     try {
 
-      const response = await fetch(
-        "http://localhost:8080/api/users/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
+      const response = await API.post(
+        "/users/login",
+        formData
       );
 
-      const data = await response.text();
+      localStorage.setItem(
+        "token",
+        response.data.token
+      );
 
-      alert(data);
+      alert("Login Successful");
 
-      if (data === "Login Successful") {
-        console.log("User Logged In");
-      }
+      console.log(response.data);
+
+      navigate("/dashboard");
 
     } catch (error) {
+
       console.error(error);
-      alert("Login Failed");
+
+      alert("Invalid Credentials");
     }
   };
 

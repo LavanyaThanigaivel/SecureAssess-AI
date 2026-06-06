@@ -1,4 +1,5 @@
 import { useState } from "react";
+import API from "../services/api";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -14,6 +15,23 @@ function Register() {
     });
   };
 
+  const handleRegister = async () => {
+  try {
+    const response = await API.post("/users", {
+      name,
+      email,
+      password,
+    });
+
+    alert("Registration Successful");
+    console.log(response.data);
+
+  } catch (error) {
+    console.error(error);
+    alert("Registration Failed");
+  }
+  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 

@@ -11,25 +11,24 @@ import CreateExam from "./pages/dashboard/CreateExam";
 import ManageExams from "./pages/dashboard/ManageExams";
 import Results from "./pages/dashboard/Results";
 
+import ProtectedRoute from "./routes/ProtectedRoute";
+
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-
-        {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-
-        {/* Dashboard Routes */}
-        <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route index element={<DashboardHome />} />
-          <Route path="create-exam" element={<CreateExam />} />
-          <Route path="exams" element={<ManageExams />} />
-          <Route path="results" element={<Results />} />
-        </Route>
-
-      </Routes>
+      <Route
+  path="/dashboard"
+  element={
+    <ProtectedRoute>
+      <DashboardLayout />
+    </ProtectedRoute>
+  }
+>
+  <Route index element={<DashboardHome />} />
+  <Route path="create-exam" element={<CreateExam />} />
+  <Route path="exams" element={<ManageExams />} />
+  <Route path="results" element={<Results />} />
+</Route>
     </BrowserRouter>
   );
 }
